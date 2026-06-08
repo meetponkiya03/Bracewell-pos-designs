@@ -331,88 +331,64 @@
         co: "",
         description: "DC battery/charging - trickle charger won't charge battery",
         resource: "",
-        estMat: "$0.00",
-        actMat: "$9,003.77",
-        estHrs: 0,
+        estHrs: 15,
         progress: "100%",
-        notes: "New inverter installed. Waiting on controller May22. Controller installed May27"
     },
     {
         task: 2,
         co: "",
         description: "Troubleshoot & replace seized water pump",
         resource: "Mech",
-        estMat: "$0.00",
-        actMat: "$192.15",
-        estHrs: 0,
+        estHrs: 25,
          progress: "50%",
-        notes: "New inverter installed. Waiting on controller May22. Controller installed May27"
     },
     {
         task: 3,
         co: "",
         description: "Troubleshoot hot water",
         resource: "",
-        estMat: "$0.00",
-        actMat: "$0.00",
-        estHrs: 0,
+        estHrs: 10,
          progress: "100%",
-        notes: "New inverter installed. Waiting on controller May22. Controller installed May27"
     },
     {
         task: 4,
         co: "",
         description: "Troubleshoot main bilge pumps",
         resource: "Mech",
-        estMat: "$0.00",
-        actMat: "$600.06",
-        estHrs: 0,
+        estHrs: 20,
         progress: "80%",
-        notes: ""
     },
     {
         task: 5,
         co: "",
         description: "Fix wiring issue with rear bilge",
         resource: "Blast",
-        estMat: "$0.00",
-        actMat: "$0.00",
-        estHrs: 0,
+        estHrs: 30,
         progress: "80%",
-        notes: ""
     },
     {
         task: 6,
         co: "",
         description: "Check wiring forward bilge",
         resource: "Customer",
-        estMat: "$0.00",
-        actMat: "$0.00",
-        estHrs: 0,
+        estHrs: 10,
         progress: "80%",
-        notes: ""
     },
     {
         task: 7,
         co: "",
         description: "Get diesel heating system operational",
         resource: "Mech",
-        estMat: "$0.00",
-        actMat: "$0.00",
-        estHrs: 0,
+        estHrs: 35,
         progress: "80%",
-        notes: ""
     },
     {
         task: 8,
         co: "",
         description: "Determine what to keep running when sitting for long periods",
         resource: "Mech",
-        estMat: "$0.00",
-        actMat: "$0.00",
-        estHrs: 0,
+        estHrs: 5,
         progress: "80%",
-        notes: ""
     }
 ];
 
@@ -486,24 +462,11 @@ taskData.forEach((task,index)=>{
                 </div>
 
                 <div class="detail-item">
-                    <strong>Est Mat:</strong>
-                    ${task.estMat}
-                </div>
-
-                <div class="detail-item">
-                    <strong>Act Mat:</strong>
-                    ${task.actMat}
-                </div>
-
-                <div class="detail-item">
-                    <strong>Est Hrs:</strong>
+                    <strong>Est Hr:</strong>
                     ${task.estHrs}
                 </div>
 
-                <div class="notes">
-                    <strong>Notes:</strong><br>
-                    ${task.notes || "No Notes"}
-                </div>
+                
 
             </div>
         </div>
