@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Base Reset & Light Mode Variables */
+        :root {
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --surface-hover: #f1f5f9;
+            --primary-blue: #0252e3;
+            --accent-blue: #3b82f6;
+            --text-main: #0f172a;
+            --text-dim: #64748b;
+            --border: #1169b0;
+            --border-hover: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            /* background-color: var(--bg-main); */
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Persistent Navigation Bar */
+        nav {
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 16px;
+            height: 16px;
+            background: var(--primary-blue);
+            border-radius: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .nav-btn.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-btn:hover:not(.active) {
+            background: var(--surface-hover);
+            color: var(--text-main);
+        }
+
+        /* View Setup */
+        main {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* High-Density Card Grid Layout */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        /* POS Tactical Card Style */
+        .pos-card {
+            background: #eaf3ff;
+            border: 1px solid var(--border);
+            padding: 25px 25px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 175px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .pos-card:hover {
+            border-color: var(--primary-blue);
+            background: var(--surface-hover);
+        }
+
+        .pos-card:active {
+            transform: scale(0.98);
+            background: #e2e8f0;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+        }
+
+        .card-body {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--text-main);
+        }
+
+        /* Detail Table Design */
+        .table-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 20px 26px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 20px 26px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: var(--surface-hover);
+        }
+
+        .task-id {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+.details-header {
+    display: flex;
+    align-items: left;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.back-btn:hover {
+    background: var(--accent-blue);
+}
+
+.project-info h2 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.project-info {
+    font-size: 1.2rem;
+    background: var(--primary-blue);
+    padding: 8px;
+    color: white;
+    border-radius: 6px;
+}
+        /* Specific Media Query optimization for 17-Inch Displays & Desktops */
+        @media (min-width: 768px)  { .card-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .card-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1280px) { .card-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1440px) { .card-grid { grid-template-columns: repeat(4, 1fr); } }
+    </style>
+</head>
+<body>
+
+    <!-- Common Navbar -->
+    <nav>
+        <div class="logo">
+            <span><img src="./assets/logo.png" alt="test" srcset="" style="height: 50px;"></span>
+            <div id="project-info" class="project-info" style="display:none;">
+                <h2 id="projectName">Project Name</h2>
+            </div>
+        </div>
+         <div  id="detailsHeader" class="details-header" style="display:none;">
+             <button class="back-btn" onclick="switchView('dashboard')">
+            ←
+            </button>
+
+        </div>
+    </div>
+
+    </nav>
+
+    <!-- Content Workspace -->
+    <main>
+        <!-- Card Grid View Section -->
+        <section id="dashboard" class="view-section active">
+            <div class="card-grid" id="posGridContainer">
+                <!-- Dynamically populated 70 cards will compile here via script -->
+            </div>
+        </section>
+
+        <!-- Detailed Table View Section -->
+        <section id="details" class="view-section">
+
+   
+    <div class="table-container">
+        <table>
+            <thead>
+               <th>Task</th>
+<th>Description</th>
+<th>Resource</th>
+<th>Est Mat</th>
+<th>Act Mat</th>
+<th>Est Hrs</th>
+<th>Notes</th>
+            </thead>
+            <tbody id="tableBodyContainer"></tbody>
+        </table>
+    </div>
+
+</section>
+    </main>
+
+    <script>
+        // Data arrays to build high-density layout dynamically
+        const taskData = [
+    {
+        task: 1,
+        co: "",
+        description: "DC battery/charging - trickle charger won't charge battery",
+        resource: "",
+        estMat: "$0.00",
+        actMat: "$9,003.77",
+        estHrs: 0,
+        progress: "100%",
+        notes: "New inverter installed. Waiting on controller May22. Controller installed May27"
+    },
+    {
+        task: 2,
+        co: "",
+        description: "Troubleshoot & replace seized water pump",
+        resource: "Mech",
+        estMat: "$0.00",
+        actMat: "$192.15",
+        estHrs: 0,
+         progress: "50%",
+        notes: "New inverter installed. Waiting on controller May22. Controller installed May27"
+    },
+    {
+        task: 3,
+        co: "",
+        description: "Troubleshoot hot water",
+        resource: "",
+        estMat: "$0.00",
+        actMat: "$0.00",
+        estHrs: 0,
+         progress: "100%",
+        notes: "New inverter installed. Waiting on controller May22. Controller installed May27"
+    },
+    {
+        task: 4,
+        co: "",
+        description: "Troubleshoot main bilge pumps",
+        resource: "Mech",
+        estMat: "$0.00",
+        actMat: "$600.06",
+        estHrs: 0,
+        progress: "80%",
+        notes: ""
+    },
+    {
+        task: 5,
+        co: "",
+        description: "Fix wiring issue with rear bilge",
+        resource: "Blast",
+        estMat: "$0.00",
+        actMat: "$0.00",
+        estHrs: 0,
+        progress: "80%",
+        notes: ""
+    },
+    {
+        task: 6,
+        co: "",
+        description: "Check wiring forward bilge",
+        resource: "Customer",
+        estMat: "$0.00",
+        actMat: "$0.00",
+        estHrs: 0,
+        progress: "80%",
+        notes: ""
+    },
+    {
+        task: 7,
+        co: "",
+        description: "Get diesel heating system operational",
+        resource: "Mech",
+        estMat: "$0.00",
+        actMat: "$0.00",
+        estHrs: 0,
+        progress: "80%",
+        notes: ""
+    },
+    {
+        task: 8,
+        co: "",
+        description: "Determine what to keep running when sitting for long periods",
+        resource: "Mech",
+        estMat: "$0.00",
+        actMat: "$0.00",
+        estHrs: 0,
+        progress: "80%",
+        notes: ""
+    }
+];
+
+const projectMock = [
+    "STRIVOUR",
+    "CALVADA",
+    "@EASTERN MACHINING",
+    "@VARIETY MARINE SERVICES",
+    "@MOONLIGHT MARINE",
+    "OCEAN BETTY",
+    "@RIPPLEFXWATER INC.",
+    "THETIS QUEEN",
+    "@RIGEL MARINE SERVICES - 1",
+    "H.N HODDER",
+    "@PALMER, PAUL",
+    "@JAMIE VAN POELE",
+    "@SEALIFE OCEAN DREAMS"
+];
+        // 1. Generate 70 Default Functional Cards
+        const gridContainer = document.getElementById('posGridContainer');
+        for (let i = 1; i <= 70; i++) {
+            const cardNode = document.createElement('div');
+            cardNode.className = 'pos-card';
+            cardNode.addEventListener('click', () => {
+    switchView('details',this);
+});
+            // Generate index targeted text configurations
+            const textContext = projectMock[(i - 1) % projectMock.length];
+            const paddedId = String(i).padStart(4, '974');
+
+            cardNode.innerHTML = `
+                <div class="card-title"><b>#${paddedId}</b></div>
+                <div class="card-body">${textContext}</div>
+            `;
+            gridContainer.appendChild(cardNode);
+        }
+
+        // 2. Generate Corresponding Rows for Detailed Matrix View
+       const tableContainer = document.getElementById('tableBodyContainer');
+
+taskData.forEach(task => {
+
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+        <td class="task-id">${task.task}</td>
+        <td style="font-weight:600">${task.description}</td>
+        <td>${task.resource ?? "-"}</td>
+        <td>${task.estMat}</td>
+        <td>${task.estHrs}</td>
+        <td>${task.progress}</td>
+        <td>${task.notes}</td>
+    `;
+
+    tableContainer.appendChild(row);
+});
+
+        // View Toggling Logic
+        // function switchView(viewId, btn) {
+        //     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        //     btn.classList.add('active');
+
+        //     document.querySelectorAll('.view-section').forEach(section => {
+        //         section.classList.remove('active');
+        //     });
+        //     document.getElementById(viewId).classList.add('active');
+        // }
+        function switchView(viewId) {
+    document.querySelectorAll('.view-section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    document.getElementById(viewId).classList.add('active');
+
+    const header = document.getElementById('detailsHeader');
+const projectName = document.getElementById('project-info');
+    if (viewId === 'details') {
+        header.style.display = 'flex';   // Hide on task screen
+        projectName.style.display = 'flex';
+    } else {
+        header.style.display = 'none';   // Show on dashboard
+        projectName.style.display = 'none';
+    }
+}
+    </script>
+</body>
+</html>

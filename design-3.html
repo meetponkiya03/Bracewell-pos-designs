@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Modern Clean Color Tokens */
+        :root {
+            --canvas: #f1f5f9;
+            --surface: #ffffff;
+            --brand-blue: #0252e3;
+            --brand-blue-alpha: rgba(2, 82, 227, 0.08);
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--canvas);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Persistent Clean Navbar */
+        nav {
+            background: var(--surface);
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+        }
+
+        .logo-swatch {
+            width: 18px;
+            height: 18px;
+            background: var(--brand-blue);
+            border-radius: 4px;
+        }
+
+        .nav-switchers {
+            display: flex;
+            background: var(--canvas);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .switch-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .switch-btn.active {
+            background: var(--surface);
+            color: var(--brand-blue);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Workspace Framework */
+        main {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .view-panel {
+            display: none;
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
+        /* Fixed 5-Column High-Density Grid layout for Desktops/17" Displays */
+        .grid-5-col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        /* Scaled 1.2x POS Card Style */
+        .pos-card-scaled {
+            background: var(--surface);
+            border: none;
+            border-bottom: 2px solid var(--border-light);
+            padding: 18px 20px; /* Enhanced Padding */
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 102px; /* 1.2x Scale Height up from original baseline */
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            transition: all 0.1s ease;
+        }
+
+        .pos-card-scaled:hover {
+            border-bottom-color: var(--brand-blue);
+            background: var(--brand-blue-alpha);
+            transform: translateY(-1px);
+        }
+
+        .pos-card-scaled:active {
+            transform: scale(0.98);
+            background: #e2e8f0;
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-text {
+            font-size: 1.05rem; /* Enhanced text size for touch targeting */
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        /* Formatted 5-Column Table Architecture */
+        .table-holder {
+            background: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 16px 24px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        td {
+            padding: 16px 24px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-dark);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .id-cell {
+            font-weight: 700;
+            color: var(--brand-blue);
+        }
+
+        .pill {
+            background: #eff6ff;
+            color: var(--brand-blue);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* 5-Column Grid Locking Rules for Desktop/17-Inch Panels */
+        @media (min-width: 768px)  { .grid-5-col { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .grid-5-col { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1200px) { .grid-5-col { grid-template-columns: repeat(5, 1fr); } }
+    </style>
+</head>
+<body>
+
+    <!-- Shared Navigation Component -->
+    <nav>
+        <div class="logo-block">
+            <span><img src="./assets/logo.png" alt="test" srcset="" style="height: 50px;"></span>
+        </div>
+        <div class="nav-switchers">
+            <button class="switch-btn active" onclick="changePanel('dashboardPanel', this)">Grid Panel</button>
+            <button class="switch-btn" onclick="changePanel('tablePanel', this)">Detailed Tasks</button>
+        </div>
+    </nav>
+
+    <!-- Main Workspace Frame -->
+    <main>
+        <!-- Grid Matrix Area (Populated with exactly 70 scaled components) -->
+        <section id="dashboardPanel" class="view-panel active">
+            <div class="grid-5-col" id="gridAnchor"></div>
+        </section>
+
+        <!-- 5-Column Informational Data Grid -->
+        <section id="tablePanel" class="view-panel">
+            <div class="table-holder">
+                 <table>
+            <thead>
+               <th>Task</th>
+<th>Description</th>
+<th>Resource</th>
+<th>Est Mat</th>
+<th>Act Mat</th>
+<th>Est Hrs</th>
+<th>Notes</th>
+            </thead>
+            <tbody id="tableAnchor"></tbody>
+        </table>
+                    
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const statusStrings = [
+    "STRIVOUR",
+    "CALVADA",
+    "@EASTERN MACHINING",
+    "@VARIETY MARINE SERVICES",
+    "@MOONLIGHT MARINE",
+    "OCEAN BETTY",
+    "@RIPPLEFXWATER INC.",
+    "THETIS QUEEN",
+    "@RIGEL MARINE SERVICES - 1",
+    "H.N HODDER",
+    "@PALMER, PAUL",
+    "@JAMIE VAN POELE",
+    "@SEALIFE OCEAN DREAMS"
+];
+
+        // Generate exactly 70 cleanly scaled tactical blocks
+        const gridBox = document.getElementById('gridAnchor');
+        for (let i = 1; i <= 70; i++) {
+            const block = document.createElement('div');
+            block.className = 'pos-card-scaled';
+            block.innerHTML = `
+                <div class="card-tag">Unit #${String(i).padStart(3, '0')}</div>
+                <div class="card-text">${statusStrings[i % statusStrings.length]}</div>
+            `;
+            gridBox.appendChild(block);
+        }
+
+        // Generate 5-Column Table Matrix Rows
+        const tableBox = document.getElementById('tableAnchor');
+        for (let j = 1; j <= 20; j++) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="id-cell">#LN-${String(j).padStart(3, '0')}</td>
+                <td style="font-weight: 600;">System Routine Diagnostics ${j}</td>
+                <td>${((j % 3) + 1.5).toFixed(1)}h</td>
+                <td style="color: var(--text-muted)">Automated validation logs run efficiently.</td>
+                <td><span class="pill">Active Process</span></td>
+            `;
+            tableBox.appendChild(row);
+        }
+
+        // Core Layout Toggling Handler
+        function changePanel(targetId, buttonNode) {
+            document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
+            buttonNode.classList.add('active');
+            
+            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
