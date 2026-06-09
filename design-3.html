@@ -1,635 +1,497 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    
-    :root{
-    --blue:#0252e3;
-    --bg:#f1f5f9;
-    --card:#ffffff;
-    --border:#e2e8f0;
-    --text:#0f172a;
-    --muted:#64748b;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* Base Reset & Light Mode Variables */
+      :root {
+        --bg-main: #f8fafc;
+        --surface: #ffffff;
+        --surface-hover: #f1f5f9;
+        --primary-blue: #0252e3;
+        --accent-blue: #3b82f6;
+        --text-main: #0f172a;
+        --text-dim: #64748b;
+        --border: #e2e8f0;
+        --border-hover: #cbd5e1;
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI,sans-serif;
-}
+        /* Visual Warning Colors */
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
 
-body{
-    background:var(--bg);
-}
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
 
-nav{
-    background:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:12px 24px;
-    box-shadow:0 1px 5px rgba(0,0,0,.05);
-}
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      /* Persistent Navigation Bar (UNTOUCHED / APPROVED) */
+      nav {
+        background-color: var(--surface);
+        border-bottom: 2px solid var(--border);
+        padding: 0.75rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
 
-.nav-left,
-.nav-right{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
 
-.logo{
-    height:50px;
-}
+      .dashboard-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-main);
+        background-color: #dbecff;
+        padding: 6px 12px;
+        border-radius: 6px;
+      }
 
-.navbar-title{
-    font-size:22px;
-    font-weight:700;
-}
+      .dashboard-filters {
+        display: flex;
+        gap: 8px;
+      }
 
-.project-header{
-    display:none;
-    background:#dbeafe;
-    color:#1e40af;
-    font-weight:700;
-    padding:10px 16px;
-    border-radius:8px;
-}
+      .filter-btn {
+        border: none;
+        background: #e2e8f0;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
 
-.filters{
-    display:flex;
-    gap:10px;
-}
+      .filter-btn.active {
+        background: var(--primary-blue);
+        color: #fff;
+      }
 
-.filter-btn{
-    border:none;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
-    background:#e2e8f0;
-    font-weight:600;
-}
+      .filter-btn:hover {
+        background: var(--accent-blue);
+        color: #fff;
+      }
 
-.filter-btn.active{
-    background:var(--blue);
-    color:white;
-}
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: -0.5px;
+      }
 
-.back-btn{
-    display:none;
-    border:none;
-    background:var(--blue);
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
-}
+      .project-info h2 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
 
-main{
-    padding:20px;
-}
+      .project-info {
+        font-size: 0.9rem;
+        background-color: #dbecff;
+        padding: 6px 12px;
+        border-radius: 6px;
+      }
 
-.project-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-    gap:15px;
-}
+      .back-btn {
+        background: var(--primary-blue);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
 
-.project-card{
-    background:white;
-    padding:18px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:.2s;
-    border-bottom:3px solid var(--border);
-}
+      .back-btn:hover {
+        background: var(--accent-blue);
+      }
 
-.project-card:hover{
-    border-color:var(--blue);
-    transform:translateY(-2px);
-}
+      /* Workspace View Section Rules */
+      main {
+        padding: 1.5rem;
+        flex: 1;
+      }
 
-.project-id{
-    color:var(--muted);
-    font-size:12px;
-    margin-bottom:8px;
-}
+      .view-section {
+        display: none;
+      }
 
-.project-name{
-    font-weight:700;
-    font-size:18px;
-}
+      .view-section.active {
+        display: block;
+      }
 
-#taskPanel{
-    display:none;
-}
+      /* ==========================================================================
+         NEW SCREEN 1 DESIGN: MODERN HIGH-DENSITY ANALYTIC GRID
+         ========================================================================== */
+      .modern-project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+      }
 
-.task-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(380px,1fr));
-    gap:15px;
-}
+      .metric-project-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-top: 4px solid var(--accent-blue);
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-.task-card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    border-left:5px solid var(--blue);
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
-}
+      .metric-project-card:hover {
+        transform: translateY(-2px);
+        border-top-color: var(--primary-blue);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
 
-.task-title{
-    font-weight:700;
-    margin-bottom:10px;
-}
+      .card-info-block {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-width: 70%;
+      }
 
-.task-desc{
-    color:#475569;
-    margin-bottom:15px;
-    line-height:1.5;
-}
+      .card-id-tag {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--text-dim);
+        letter-spacing: 0.5px;
+      }
 
-.task-footer{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:10px;
-}
+      .card-main-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-main);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-.badge{
-    padding:6px 10px;
-    border-radius:6px;
-    font-size:12px;
-    font-weight:600;
-}
+      .card-sub-stats {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-dim);
+      }
 
-.resource{
-    background:#dbeafe;
-    color:#1d4ed8;
-}
+      /* Circle Ring Visual Progress Indicator */
+      .progress-ring-container {
+        position: relative;
+        width: 54px;
+        height: 54px;
+      }
 
-.progress{
-    background:#dcfce7;
-    color:#15803d;
-}</style>
-</head>
-<body>
+      .progress-ring-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--text-main);
+      }
 
-<nav>
-    <div class="nav-left">
+      /* ==========================================================================
+         NEW SCREEN 2 DESIGN: LINEAR PERFORMANCE MATRIX
+         ========================================================================== */
+      .matrix-table-wrapper {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
 
-        <img src="./assets/logo.png"
-             alt="Logo"
-             class="logo">
+      .matrix-row-item {
+        display: grid;
+        grid-template-columns: 70px 100px 1fr 180px 120px;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.1s ease;
+      }
 
-        <div id="dashboardTitle" class="navbar-title">
-            ShipYard
+      .matrix-row-item:last-child {
+        border-bottom: none;
+      }
+
+      .matrix-row-item.matrix-header {
+        background: #f1f5f9;
+        font-weight: 800;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-dim);
+      }
+
+      .matrix-row-item:not(.matrix-header):hover {
+        background: var(--surface-hover);
+      }
+
+      .matrix-cell {
+        padding: 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .matrix-cell.center {
+        text-align: center;
+      }
+
+      .matrix-id {
+        font-weight: 700;
+        color: var(--primary-blue);
+      }
+
+      .matrix-resource-badge {
+        display: inline-block;
+        background: #e2e8f0;
+        color: var(--text-main);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-align: center;
+        min-width: 70px;
+      }
+
+      .matrix-desc {
+        color: var(--text-main);
+        font-weight: 600;
+      }
+
+      /* Hours and status displays */
+      .matrix-hours-pill {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .hours-line {
+        font-size: 0.8rem;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .hours-line.overrun {
+        color: var(--danger);
+        font-weight: 700;
+      }
+
+      .status-pill-fill {
+        background: #ecfdf5;
+        color: var(--success);
+        padding: 6px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .status-pill-fill.active {
+        background: #eff6ff;
+        color: var(--accent-blue);
+      }
+
+      .status-pill-fill.warning {
+        background: #fffbeb;
+        color: var(--warning);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Common Approved Navbar Framework -->
+    <nav>
+      <div class="logo">
+        <img src="./assets/logo.png" alt="Company Logo" style="height:50px;" onerror="this.style.display='none'">
+        <div class="dashboard-title" id="dashboardTitle">ShipYard</div>
+        <div id="project-info" class="project-info" style="display:none;">
+          <h2 id="projectName">Project Name</h2>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <div id="dashboardFilters" class="dashboard-filters">
+          <button class="filter-btn active">Yard</button>
+          <button class="filter-btn">Shop</button>
+          <button class="filter-btn">New</button>
+          <button class="filter-btn">Supply</button>
         </div>
 
-        <div id="projectHeader" class="project-header">
-            <span id="projectName"></span>
+        <div id="detailsHeader" style="display: none">
+          <button class="back-btn" onclick="switchView('dashboard')">← Return to Projects</button>
         </div>
+      </div>
+    </nav>
 
-    </div>
-
-    <div class="nav-right">
-
-        <div id="filterSection" class="filters">
-
-            <button class="filter-btn active">
-                Yard
-            </button>
-
-            <button class="filter-btn">
-                Shop
-            </button>
-
-            <button class="filter-btn">
-                New
-            </button>
-
-            <button class="filter-btn">
-                Supply
-            </button>
-
+    <!-- Content Workspace -->
+    <main>
+      <!-- ========================================================== -->
+      <!-- VIEW 1: PROJECT HUD SCREEN                                 -->
+      <!-- ========================================================== -->
+      <section id="dashboard" class="view-section active">
+        <div class="modern-project-grid" id="posGridContainer">
+          <!-- Dynamically compiled analytical project tiles -->
         </div>
+      </section>
 
-        <button
-            id="backBtn"
-            class="back-btn"
-            onclick="goToDashboard()">
-            ← Back
-        </button>
+      <!-- ========================================================== -->
+      <!-- VIEW 2: LINEAR PERFORMANCE MATRIX TASK VIEW                -->
+      <!-- ========================================================== -->
+      <section id="details" class="view-section">
+        <div class="matrix-table-wrapper">
+          <!-- Table Header -->
+          <div class="matrix-row-item matrix-header">
+            <div class="matrix-cell">ID</div>
+            <div class="matrix-cell">Resource</div>
+            <div class="matrix-cell">Operation Description</div>
+            <div class="matrix-cell">Hours</div>
+            <div class="matrix-cell center">Progress</div>
+          </div>
+          <!-- Table Rows Container -->
+          <div id="matrixRowsContainer"></div>
+        </div>
+      </section>
+    </main>
 
-    </div>
-</nav>
-
-<main>
-
-    <section id="dashboardPanel">
-
-        <div id="gridAnchor" class="project-grid"></div>
-
-    </section>
-
-    <section id="taskPanel">
-
-        <div id="taskContainer" class="task-grid"></div>
-
-    </section>
-
-</main>
-<script>
+    <script>
+      // Production Operational Dataset
       const taskData = [
-  {
-    task: 1,
-    co: "",
-    description: "DC battery/charging - trickle charger won't charge battery",
-    resource: "",
-    estHrs: 15,actHrs: 22,
-    progress: "100%",
-  },
-  {
-    task: 2,
-    co: "",
-    description: "Troubleshoot & replace seized water pump",
-    resource: "Mech",
-    estHrs: 25,actHrs: 26,
-    progress: "50%",
-  },
-  {
-    task: 3,
-    co: "",
-    description: "Troubleshoot hot water",
-    resource: "",
-    estHrs: 10,actHrs: 22,
-    progress: "100%",
-  },
-  {
-    task: 4,
-    co: "",
-    description: "Troubleshoot main bilge pumps",
-    resource: "Mech",
-    estHrs: 20,actHrs: 25,
-    progress: "80%",
-  },
-  {
-    task: 5,
-    co: "",
-    description: "Fix wiring issue with rear bilge",
-    resource: "Blast",
-    estHrs: 30,actHrs: 22,
-    progress: "80%",
-  },
-  {
-    task: 6,
-    co: "",
-    description: "Check wiring forward bilge",
-    resource: "Customer",
-    estHrs: 10,actHrs: 22,
-    progress: "80%",
-  },
-  {
-    task: 7,
-    co: "",
-    description: "Get diesel heating system operational",
-    resource: "Mech",
-    estHrs: 35,actHrs: 42,
-    progress: "80%",
-  },
-  {
-    task: 8,
-    co: "",
-    description: "Determine what to keep running when sitting for long periods",
-    resource: "Mech",
-    estHrs: 5,actHrs: 6,
-    progress: "80%",
-  },
-  {
-    task: 9,
-    co: "",
-    description: "Inspect fuel tank and clean sediment",
-    resource: "Mech",
-    estHrs: 18,actHrs: 22,
-    progress: "40%",
-  },
-  {
-    task: 10,
-    co: "",
-    description: "Replace damaged navigation lights",
-    resource: "Elec",
-    estHrs: 12,actHrs: 22,
-    progress: "60%",
-  },
-  {
-    task: 11,
-    co: "",
-    description: "Repair freshwater plumbing leak",
-    resource: "Plumbing",
-    estHrs: 14,actHrs: 28,
-    progress: "25%",
-  },
-  {
-    task: 12,
-    co: "",
-    description: "Inspect propeller shaft alignment",
-    resource: "Mech",
-    estHrs: 20,actHrs: 29,
-    progress: "70%",
-  },
-  {
-    task: 13,
-    co: "",
-    description: "Replace engine oil and filters",
-    resource: "Mech",
-    estHrs: 8,actHrs: 12,
-    progress: "100%",
-  },
-  {
-    task: 14,
-    co: "",
-    description: "Check and repair deck lighting",
-    resource: "Elec",
-    estHrs: 16,actHrs: 22,
-    progress: "55%",
-  },
-  {
-    task: 15,
-    co: "",
-    description: "Inspect hull for corrosion",
-    resource: "Blast",
-    estHrs: 22,actHrs: 22,
-    progress: "35%",
-  },
-  {
-    task: 16,
-    co: "",
-    description: "Apply anti-fouling paint to hull",
-    resource: "Paint",
-    estHrs: 40,actHrs: 22,
-    progress: "20%",
-  },
-  {
-    task: 17,
-    co: "",
-    description: "Test emergency bilge alarm system",
-    resource: "Elec",
-    estHrs: 6,actHrs: 8,
-    progress: "90%",
-  },
-  {
-    task: 18,
-    co: "",
-    description: "Repair anchor winch controls",
-    resource: "Mech",
-    estHrs: 18,actHrs: 22,
-    progress: "45%",
-  },
-  {
-    task: 19,
-    co: "",
-    description: "Replace damaged cabin windows",
-    resource: "Customer",
-    estHrs: 24,actHrs: 28,
-    progress: "30%",
-  },
-  {
-    task: 20,
-    co: "",
-    description: "Inspect and tighten deck fittings",
-    resource: "Mech",
-    estHrs: 12,actHrs: 30,
-    progress: "65%",
-  },
-  {
-    task: 21,
-    co: "",
-    description: "Service generator unit",
-    resource: "Mech",
-    estHrs: 20,actHrs: 25,
-    progress: "75%",
-  },
-  {
-    task: 22,
-    co: "",
-    description: "Replace worn-out hydraulic hoses",
-    resource: "Hydraulic",
-    estHrs: 15,actHrs: 22,
-    progress: "50%",
-  },
-  {
-    task: 23,
-    co: "",
-    description: "Inspect radar and communication systems",
-    resource: "Elec",
-    estHrs: 18,actHrs: 20,
-    progress: "60%",
-  },
-  {
-    task: 24,
-    co: "",
-    description: "Repair damaged handrails",
-    resource: "Fabrication",
-    estHrs: 10,actHrs: 10,
-    progress: "85%",
-  },
-  {
-    task: 25,
-    co: "",
-    description: "Pressure test cooling system",
-    resource: "Mech",
-    estHrs: 8,actHrs: 10,
-    progress: "40%",
-  },
-  {
-    task: 26,
-    co: "",
-    description: "Inspect fire suppression equipment",
-    resource: "Safety",
-    estHrs: 5,actHrs: 6,
-    progress: "100%",
-  },
-  {
-    task: 27,
-    co: "",
-    description: "Repair damaged cabin flooring",
-    resource: "Carpentry",
-    estHrs: 16,actHrs: 10,
-    progress: "30%",
-  },
-  {
-    task: 28,
-    co: "",
-    description: "Replace exhaust system gasket",
-    resource: "Mech",
-    estHrs: 12,actHrs: 10,
-    progress: "70%",
-  },
-  {
-    task: 29,
-    co: "",
-    description: "Clean and service air conditioning unit",
-    resource: "HVAC",
-    estHrs: 14,
-    actHrs: 10,
-    progress: "55%",
-  },
-  {
-    task: 30,
-    co: "",
-    description: "Final inspection and sea trial preparation",
-    resource: "Customer",
-    estHrs: 20,
-    actHrs: 20,
-    progress: "10%",
-  },
-];
+        { task: 1, co: "", description: "DC battery/charging - trickle charger won't charge battery", resource: "Elec", estHrs: 15, actHrs: 22, progress: "100%" },
+        { task: 2, co: "", description: "Troubleshoot & replace seized water pump", resource: "Mech", estHrs: 25, actHrs: 26, progress: "50%" },
+        { task: 3, co: "", description: "Troubleshoot hot water", resource: "Plumb", estHrs: 10, actHrs: 22, progress: "100%" },
+        { task: 4, co: "", description: "Troubleshoot main bilge pumps", resource: "Mech", estHrs: 20, actHrs: 25, progress: "80%" },
+        { task: 5, co: "", description: "Fix wiring issue with rear bilge", resource: "Blast", estHrs: 30, actHrs: 22, progress: "80%" },
+        { task: 6, co: "", description: "Check wiring forward bilge", resource: "Cust", estHrs: 10, actHrs: 22, progress: "80%" },
+        { task: 7, co: "", description: "Get diesel heating system operational", resource: "Mech", estHrs: 35, actHrs: 42, progress: "80%" },
+        { task: 8, co: "", description: "Determine what to keep running when sitting for long periods", resource: "Mech", estHrs: 5, actHrs: 6, progress: "80%" },
+        { task: 9, co: "", description: "Inspect fuel tank and clean sediment", resource: "Mech", estHrs: 18, actHrs: 22, progress: "40%" },
+        { task: 10, co: "", description: "Replace damaged navigation lights", resource: "Elec", estHrs: 12, actHrs: 22, progress: "60%" },
+        { task: 11, co: "", description: "Repair freshwater plumbing leak", resource: "Plumb", estHrs: 14, actHrs: 28, progress: "25%" },
+        { task: 12, co: "", description: "Inspect propeller shaft alignment", resource: "Mech", estHrs: 20, actHrs: 29, progress: "70%" },
+        { task: 13, co: "", description: "Replace engine oil and filters", resource: "Mech", estHrs: 8, actHrs: 12, progress: "100%" },
+        { task: 14, co: "", description: "Check and repair deck lighting", resource: "Elec", estHrs: 16, actHrs: 22, progress: "55%" },
+        { task: 15, co: "", description: "Inspect hull for corrosion", resource: "Blast", estHrs: 22, actHrs: 22, progress: "35%" },
+        { task: 16, co: "", description: "Apply anti-fouling paint to hull", resource: "Paint", estHrs: 40, actHrs: 22, progress: "20%" },
+        { task: 17, co: "", description: "Test emergency bilge alarm system", resource: "Elec", estHrs: 6, actHrs: 8, progress: "90%" },
+        { task: 18, co: "", description: "Repair anchor winch controls", resource: "Mech", estHrs: 18, actHrs: 22, progress: "45%" },
+        { task: 19, co: "", description: "Replace damaged cabin windows", resource: "Cust", estHrs: 24, actHrs: 28, progress: "30%" },
+        { task: 20, co: "", description: "Inspect and tighten deck fittings", resource: "Mech", estHrs: 12, actHrs: 30, progress: "65%" },
+      ];
 
-    const projectMock = [
-    "STRIVOUR",
-    "CALVADA",
-    "@EASTERN MACHINING",
-    "@VARIETY MARINE SERVICES",
-    "@MOONLIGHT MARINE",
-    "OCEAN BETTY",
-    "@RIPPLEFXWATER INC.",
-    "THETIS QUEEN",
-    "@RIGEL MARINE SERVICES - 1",
-    "H.N HODDER",
-    "@PALMER, PAUL",
-    "@JAMIE VAN POELE",
-    "@SEALIFE OCEAN DREAMS"
-];
+      const projectMock = [
+        "STRIVOUR", "CALVADA", "@EASTERN MACHINING", "@VARIETY MARINE SERVICES",
+        "@MOONLIGHT MARINE", "OCEAN BETTY", "@RIPPLEFXWATER INC.", "THETIS QUEEN",
+        "@RIGEL MARINE SERVICES - 1", "H.N HODDER", "@PALMER, PAUL", "@JAMIE VAN POELE",
+        "@SEALIFE OCEAN DREAMS"
+      ];
 
-const gridAnchor =
-    document.getElementById("gridAnchor");
+      // 1. Render Screen 1: High-Density Project HUD Grid
+      const gridContainer = document.getElementById("posGridContainer");
+      for (let i = 1; i <= 70; i++) {
+        const projectName = projectMock[(i - 1) % projectMock.length];
+        const paddedId = String(i).padStart(4, "974");
+        
+        // Mocking progressive completion value based on calculation variants
 
-projectMock.forEach((project,index)=>{
+        const cardNode = document.createElement("div");
+        cardNode.className = "metric-project-card";
+        cardNode.addEventListener('click', () => {
+          document.getElementById('projectName').textContent = projectName;
+          switchView('details');
+        });
 
-    const card =
-        document.createElement("div");
-    card.className = "project-card";
+        cardNode.innerHTML = `
+          <div class="card-info-block">
+            <span class="card-id-tag">#${paddedId}</span>
+            <div class="card-main-title">${projectName}</div>
+          </div>
+        `;
+        gridContainer.appendChild(cardNode);
+      }
 
-    card.innerHTML = `
-        <div class="project-id">
-            Project #${String(index+1).padStart(3,"0")}
-        </div>
+      // 2. Render Screen 2: High-Contrast Performance Matrix
+      const matrixContainer = document.getElementById("matrixRowsContainer");
+      taskData.forEach((task) => {
+        const rowNode = document.createElement("div");
+        rowNode.className = "matrix-row-item";
 
-        <div class="project-name">
-            ${project}
-        </div>
-    `;
+        const isOverrun = task.actHrs > task.estHrs;
+        const rawProgress = parseInt(task.progress);
+        
+        let progressStyleClass = "active";
+        if (rawProgress === 100) progressStyleClass = "";
+        else if (rawProgress < 40) progressStyleClass = "warning";
 
-    card.addEventListener("click",()=>{
+        rowNode.innerHTML = `
+          <div class="matrix-cell matrix-id">${task.task}</div>
+          <div class="matrix-cell">
+            <span class="matrix-resource-badge">${task.resource || 'Gen'}</span>
+          </div>
+          <div class="matrix-cell matrix-desc">${task.description}</div>
+          <div class="matrix-cell matrix-hours-pill">
+            <div class="hours-line"><span>EST:</span><span>${task.estHrs} hrs</span></div>
+            <div class="hours-line ${isOverrun ? 'overrun' : ''}">
+              <span>ACT:</span><span>${task.actHrs} hrs</span>
+            </div>
+          </div>
+          <div class="matrix-cell center">
+            <div class="status-pill-fill ${progressStyleClass}">${task.progress}</div>
+          </div>
+        `;
+        matrixContainer.appendChild(rowNode);
+      });
 
-        document.getElementById("dashboardPanel")
-            .style.display="none";
+      // Navigation & Layout View Controller
+      function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
 
-        document.getElementById("taskPanel")
-            .style.display="block";
+        const header = document.getElementById('detailsHeader');
+        const projectInfo = document.getElementById('project-info');
+        const filters = document.getElementById('dashboardFilters');
+        const dashboardTitle = document.getElementById('dashboardTitle');
 
-        document.getElementById("dashboardTitle")
-            .style.display="none";
+        if (viewId === 'details') {
+          header.style.display = 'flex';
+          projectInfo.style.display = 'flex';
+          filters.style.display = 'none';
+          dashboardTitle.style.display = 'none';
+        } else {
+          header.style.display = 'none';
+          projectInfo.style.display = 'none';
+          filters.style.display = 'flex';
+          dashboardTitle.style.display = 'block';
+        }
+      }
 
-        document.getElementById("projectHeader")
-            .style.display="block";
-
-        document.getElementById("projectName")
-            .innerText=project;
-
-        document.getElementById("filterSection")
-            .style.display="none";
-
-        document.getElementById("backBtn")
-            .style.display="block";
-
-    });
-
-    gridAnchor.appendChild(card);
-
-});
-
-const taskContainer =
-    document.getElementById("taskContainer");
-
-taskData.forEach(task=>{
-
-    const card =
-        document.createElement("div");
-
-    card.className="task-card";
-
-    card.innerHTML=`
-
-        <div class="task-title">
-            ${task.task}
-        </div>
-
-        <div class="task-desc">
-            ${task.description}
-        </div>
-
-        <div class="task-footer">
-
-            <span class="badge resource">
-                ${task.resource || "General"}
-            </span>
-
-            <span>
-                ${task.estHrs} hrs
-            </span>
-
-            <span class="badge progress">
-                ${task.progress}
-            </span>
-
-        </div>
-
-    `;
-
-    taskContainer.appendChild(card);
-
-});
-
-function goToDashboard(){
-
-    document.getElementById("taskPanel")
-        .style.display="none";
-
-    document.getElementById("dashboardPanel")
-        .style.display="block";
-
-    document.getElementById("dashboardTitle")
-        .style.display="block";
-
-    document.getElementById("projectHeader")
-        .style.display="none";
-
-    document.getElementById("filterSection")
-        .style.display="flex";
-
-    document.getElementById("backBtn")
-        .style.display="none";
-}
-
-document
-.querySelectorAll(".filter-btn")
-.forEach(btn=>{
-
-    btn.addEventListener("click",()=>{
-
-        document
-        .querySelectorAll(".filter-btn")
-        .forEach(x=>x.classList.remove("active"));
-
-        btn.classList.add("active");
-
-    });
-
-});
-</script>
-</body>
+      // Filter Button Switcher
+      document.getElementById('dashboardFilters').addEventListener('click', function (e) {
+        if (!e.target.classList.contains('filter-btn')) return;
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+      });
+    </script>
+  </body>
 </html>
