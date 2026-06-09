@@ -1,254 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* Modern Clean Color Tokens */
-        :root {
-            --canvas: #f1f5f9;
-            --surface: #ffffff;
-            --brand-blue: #0252e3;
-            --brand-blue-alpha: rgba(2, 82, 227, 0.08);
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border-light: #e2e8f0;
-        }
+<style>
+    
+    :root{
+    --blue:#0252e3;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --border:#e2e8f0;
+    --text:#0f172a;
+    --muted:#64748b;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
 
-        body {
-            background-color: var(--canvas);
-            color: var(--text-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+body{
+    background:var(--bg);
+}
 
-        /* Persistent Clean Navbar */
-        nav {
-            background: var(--surface);
-            padding: 0.75rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+nav{
+    background:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 24px;
+    box-shadow:0 1px 5px rgba(0,0,0,.05);
+}
 
-        .logo-block {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            letter-spacing: -0.3px;
-        }
+.nav-left,
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
 
-        .logo-swatch {
-            width: 18px;
-            height: 18px;
-            background: var(--brand-blue);
-            border-radius: 4px;
-        }
+.logo{
+    height:50px;
+}
 
-        .nav-switchers {
-            display: flex;
-            background: var(--canvas);
-            padding: 4px;
-            border-radius: 8px;
-        }
+.navbar-title{
+    font-size:22px;
+    font-weight:700;
+}
 
-        .switch-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
+.project-header{
+    display:none;
+    background:#dbeafe;
+    color:#1e40af;
+    font-weight:700;
+    padding:10px 16px;
+    border-radius:8px;
+}
 
-        .switch-btn.active {
-            background: var(--surface);
-            color: var(--brand-blue);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
+.filters{
+    display:flex;
+    gap:10px;
+}
 
-        /* Workspace Framework */
-        main {
-            padding: 1.5rem;
-            flex: 1;
-        }
+.filter-btn{
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    background:#e2e8f0;
+    font-weight:600;
+}
 
-        .view-panel {
-            display: none;
-        }
+.filter-btn.active{
+    background:var(--blue);
+    color:white;
+}
 
-        .view-panel.active {
-            display: block;
-        }
+.back-btn{
+    display:none;
+    border:none;
+    background:var(--blue);
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+}
 
-        /* Fixed 5-Column High-Density Grid layout for Desktops/17" Displays */
-        .grid-5-col {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+main{
+    padding:20px;
+}
 
-        /* Scaled 1.2x POS Card Style */
-        .pos-card-scaled {
-            background: var(--surface);
-            border: none;
-            border-bottom: 2px solid var(--border-light);
-            padding: 18px 20px; /* Enhanced Padding */
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 102px; /* 1.2x Scale Height up from original baseline */
-            cursor: pointer;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-            transition: all 0.1s ease;
-        }
+.project-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:15px;
+}
 
-        .pos-card-scaled:hover {
-            border-bottom-color: var(--brand-blue);
-            background: var(--brand-blue-alpha);
-            transform: translateY(-1px);
-        }
+.project-card{
+    background:white;
+    padding:18px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.2s;
+    border-bottom:3px solid var(--border);
+}
 
-        .pos-card-scaled:active {
-            transform: scale(0.98);
-            background: #e2e8f0;
-        }
+.project-card:hover{
+    border-color:var(--blue);
+    transform:translateY(-2px);
+}
 
-        .card-tag {
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+.project-id{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:8px;
+}
 
-        .card-text {
-            font-size: 1.05rem; /* Enhanced text size for touch targeting */
-            font-weight: 700;
-            color: var(--text-dark);
-            line-height: 1.2;
-        }
+.project-name{
+    font-weight:700;
+    font-size:18px;
+}
 
-        /* Formatted 5-Column Table Architecture */
-        .table-holder {
-            background: var(--surface);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-        }
+#taskPanel{
+    display:none;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
+.task-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(380px,1fr));
+    gap:15px;
+}
 
-        th {
-            background: #f8fafc;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            padding: 16px 24px;
-            border-bottom: 2px solid var(--border-light);
-        }
+.task-card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    border-left:5px solid var(--blue);
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
 
-        td {
-            padding: 16px 24px;
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--border-light);
-            color: var(--text-dark);
-        }
+.task-title{
+    font-weight:700;
+    margin-bottom:10px;
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+.task-desc{
+    color:#475569;
+    margin-bottom:15px;
+    line-height:1.5;
+}
 
-        tr:hover td {
-            background-color: #f8fafc;
-        }
+.task-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
 
-        .id-cell {
-            font-weight: 700;
-            color: var(--brand-blue);
-        }
+.badge{
+    padding:6px 10px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:600;
+}
 
-        .pill {
-            background: #eff6ff;
-            color: var(--brand-blue);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
+.resource{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
 
-        /* 5-Column Grid Locking Rules for Desktop/17-Inch Panels */
-        @media (min-width: 768px)  { .grid-5-col { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .grid-5-col { grid-template-columns: repeat(4, 1fr); } }
-        @media (min-width: 1200px) { .grid-5-col { grid-template-columns: repeat(5, 1fr); } }
-    </style>
+.progress{
+    background:#dcfce7;
+    color:#15803d;
+}</style>
 </head>
 <body>
 
-    <!-- Shared Navigation Component -->
-    <nav>
-        <div class="logo-block">
-            <span><img src="./assets/logo.png" alt="test" srcset="" style="height: 50px;"></span>
+<nav>
+    <div class="nav-left">
+
+        <img src="./assets/logo.png"
+             alt="Logo"
+             class="logo">
+
+        <div id="dashboardTitle" class="navbar-title">
+            ShipYard
         </div>
-        <div class="nav-switchers">
-            <button class="switch-btn active" onclick="changePanel('dashboardPanel', this)">Grid Panel</button>
-            <button class="switch-btn" onclick="changePanel('tablePanel', this)">Detailed Tasks</button>
+
+        <div id="projectHeader" class="project-header">
+            <span id="projectName"></span>
         </div>
-    </nav>
 
-    <!-- Main Workspace Frame -->
-    <main>
-        <!-- Grid Matrix Area (Populated with exactly 70 scaled components) -->
-        <section id="dashboardPanel" class="view-panel active">
-            <div class="grid-5-col" id="gridAnchor"></div>
-        </section>
+    </div>
 
-        <!-- 5-Column Informational Data Grid -->
-        <section id="tablePanel" class="view-panel">
-            <div class="table-holder">
-                 <table>
-            <thead>
-               <th>Task</th>
-<th>Description</th>
-<th>Resource</th>
-<th>Est Mat</th>
-<th>Act Mat</th>
-<th>Est Hrs</th>
-<th>Notes</th>
-            </thead>
-            <tbody id="tableAnchor"></tbody>
-        </table>
-                    
-            </div>
-        </section>
-    </main>
+    <div class="nav-right">
 
-    <script>
-        const statusStrings = [
+        <div id="filterSection" class="filters">
+
+            <button class="filter-btn active">
+                Yard
+            </button>
+
+            <button class="filter-btn">
+                Shop
+            </button>
+
+            <button class="filter-btn">
+                New
+            </button>
+
+            <button class="filter-btn">
+                Supply
+            </button>
+
+        </div>
+
+        <button
+            id="backBtn"
+            class="back-btn"
+            onclick="goToDashboard()">
+            ← Back
+        </button>
+
+    </div>
+</nav>
+
+<main>
+
+    <section id="dashboardPanel">
+
+        <div id="gridAnchor" class="project-grid"></div>
+
+    </section>
+
+    <section id="taskPanel">
+
+        <div id="taskContainer" class="task-grid"></div>
+
+    </section>
+
+</main>
+<script>
+      const taskData = [
+  {
+    task: 1,
+    co: "",
+    description: "DC battery/charging - trickle charger won't charge battery",
+    resource: "",
+    estHrs: 15,actHrs: 22,
+    progress: "100%",
+  },
+  {
+    task: 2,
+    co: "",
+    description: "Troubleshoot & replace seized water pump",
+    resource: "Mech",
+    estHrs: 25,actHrs: 26,
+    progress: "50%",
+  },
+  {
+    task: 3,
+    co: "",
+    description: "Troubleshoot hot water",
+    resource: "",
+    estHrs: 10,actHrs: 22,
+    progress: "100%",
+  },
+  {
+    task: 4,
+    co: "",
+    description: "Troubleshoot main bilge pumps",
+    resource: "Mech",
+    estHrs: 20,actHrs: 25,
+    progress: "80%",
+  },
+  {
+    task: 5,
+    co: "",
+    description: "Fix wiring issue with rear bilge",
+    resource: "Blast",
+    estHrs: 30,actHrs: 22,
+    progress: "80%",
+  },
+  {
+    task: 6,
+    co: "",
+    description: "Check wiring forward bilge",
+    resource: "Customer",
+    estHrs: 10,actHrs: 22,
+    progress: "80%",
+  },
+  {
+    task: 7,
+    co: "",
+    description: "Get diesel heating system operational",
+    resource: "Mech",
+    estHrs: 35,actHrs: 42,
+    progress: "80%",
+  },
+  {
+    task: 8,
+    co: "",
+    description: "Determine what to keep running when sitting for long periods",
+    resource: "Mech",
+    estHrs: 5,actHrs: 6,
+    progress: "80%",
+  },
+  {
+    task: 9,
+    co: "",
+    description: "Inspect fuel tank and clean sediment",
+    resource: "Mech",
+    estHrs: 18,actHrs: 22,
+    progress: "40%",
+  },
+  {
+    task: 10,
+    co: "",
+    description: "Replace damaged navigation lights",
+    resource: "Elec",
+    estHrs: 12,actHrs: 22,
+    progress: "60%",
+  },
+  {
+    task: 11,
+    co: "",
+    description: "Repair freshwater plumbing leak",
+    resource: "Plumbing",
+    estHrs: 14,actHrs: 28,
+    progress: "25%",
+  },
+  {
+    task: 12,
+    co: "",
+    description: "Inspect propeller shaft alignment",
+    resource: "Mech",
+    estHrs: 20,actHrs: 29,
+    progress: "70%",
+  },
+  {
+    task: 13,
+    co: "",
+    description: "Replace engine oil and filters",
+    resource: "Mech",
+    estHrs: 8,actHrs: 12,
+    progress: "100%",
+  },
+  {
+    task: 14,
+    co: "",
+    description: "Check and repair deck lighting",
+    resource: "Elec",
+    estHrs: 16,actHrs: 22,
+    progress: "55%",
+  },
+  {
+    task: 15,
+    co: "",
+    description: "Inspect hull for corrosion",
+    resource: "Blast",
+    estHrs: 22,actHrs: 22,
+    progress: "35%",
+  },
+  {
+    task: 16,
+    co: "",
+    description: "Apply anti-fouling paint to hull",
+    resource: "Paint",
+    estHrs: 40,actHrs: 22,
+    progress: "20%",
+  },
+  {
+    task: 17,
+    co: "",
+    description: "Test emergency bilge alarm system",
+    resource: "Elec",
+    estHrs: 6,actHrs: 8,
+    progress: "90%",
+  },
+  {
+    task: 18,
+    co: "",
+    description: "Repair anchor winch controls",
+    resource: "Mech",
+    estHrs: 18,actHrs: 22,
+    progress: "45%",
+  },
+  {
+    task: 19,
+    co: "",
+    description: "Replace damaged cabin windows",
+    resource: "Customer",
+    estHrs: 24,actHrs: 28,
+    progress: "30%",
+  },
+  {
+    task: 20,
+    co: "",
+    description: "Inspect and tighten deck fittings",
+    resource: "Mech",
+    estHrs: 12,actHrs: 30,
+    progress: "65%",
+  },
+  {
+    task: 21,
+    co: "",
+    description: "Service generator unit",
+    resource: "Mech",
+    estHrs: 20,actHrs: 25,
+    progress: "75%",
+  },
+  {
+    task: 22,
+    co: "",
+    description: "Replace worn-out hydraulic hoses",
+    resource: "Hydraulic",
+    estHrs: 15,actHrs: 22,
+    progress: "50%",
+  },
+  {
+    task: 23,
+    co: "",
+    description: "Inspect radar and communication systems",
+    resource: "Elec",
+    estHrs: 18,actHrs: 20,
+    progress: "60%",
+  },
+  {
+    task: 24,
+    co: "",
+    description: "Repair damaged handrails",
+    resource: "Fabrication",
+    estHrs: 10,actHrs: 10,
+    progress: "85%",
+  },
+  {
+    task: 25,
+    co: "",
+    description: "Pressure test cooling system",
+    resource: "Mech",
+    estHrs: 8,actHrs: 10,
+    progress: "40%",
+  },
+  {
+    task: 26,
+    co: "",
+    description: "Inspect fire suppression equipment",
+    resource: "Safety",
+    estHrs: 5,actHrs: 6,
+    progress: "100%",
+  },
+  {
+    task: 27,
+    co: "",
+    description: "Repair damaged cabin flooring",
+    resource: "Carpentry",
+    estHrs: 16,actHrs: 10,
+    progress: "30%",
+  },
+  {
+    task: 28,
+    co: "",
+    description: "Replace exhaust system gasket",
+    resource: "Mech",
+    estHrs: 12,actHrs: 10,
+    progress: "70%",
+  },
+  {
+    task: 29,
+    co: "",
+    description: "Clean and service air conditioning unit",
+    resource: "HVAC",
+    estHrs: 14,
+    actHrs: 10,
+    progress: "55%",
+  },
+  {
+    task: 30,
+    co: "",
+    description: "Final inspection and sea trial preparation",
+    resource: "Customer",
+    estHrs: 20,
+    actHrs: 20,
+    progress: "10%",
+  },
+];
+
+    const projectMock = [
     "STRIVOUR",
     "CALVADA",
     "@EASTERN MACHINING",
@@ -264,40 +504,132 @@
     "@SEALIFE OCEAN DREAMS"
 ];
 
-        // Generate exactly 70 cleanly scaled tactical blocks
-        const gridBox = document.getElementById('gridAnchor');
-        for (let i = 1; i <= 70; i++) {
-            const block = document.createElement('div');
-            block.className = 'pos-card-scaled';
-            block.innerHTML = `
-                <div class="card-tag">Unit #${String(i).padStart(3, '0')}</div>
-                <div class="card-text">${statusStrings[i % statusStrings.length]}</div>
-            `;
-            gridBox.appendChild(block);
-        }
+const gridAnchor =
+    document.getElementById("gridAnchor");
 
-        // Generate 5-Column Table Matrix Rows
-        const tableBox = document.getElementById('tableAnchor');
-        for (let j = 1; j <= 20; j++) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td class="id-cell">#LN-${String(j).padStart(3, '0')}</td>
-                <td style="font-weight: 600;">System Routine Diagnostics ${j}</td>
-                <td>${((j % 3) + 1.5).toFixed(1)}h</td>
-                <td style="color: var(--text-muted)">Automated validation logs run efficiently.</td>
-                <td><span class="pill">Active Process</span></td>
-            `;
-            tableBox.appendChild(row);
-        }
+projectMock.forEach((project,index)=>{
 
-        // Core Layout Toggling Handler
-        function changePanel(targetId, buttonNode) {
-            document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
-            buttonNode.classList.add('active');
-            
-            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
-            document.getElementById(targetId).classList.add('active');
-        }
-    </script>
+    const card =
+        document.createElement("div");
+    card.className = "project-card";
+
+    card.innerHTML = `
+        <div class="project-id">
+            Project #${String(index+1).padStart(3,"0")}
+        </div>
+
+        <div class="project-name">
+            ${project}
+        </div>
+    `;
+
+    card.addEventListener("click",()=>{
+
+        document.getElementById("dashboardPanel")
+            .style.display="none";
+
+        document.getElementById("taskPanel")
+            .style.display="block";
+
+        document.getElementById("dashboardTitle")
+            .style.display="none";
+
+        document.getElementById("projectHeader")
+            .style.display="block";
+
+        document.getElementById("projectName")
+            .innerText=project;
+
+        document.getElementById("filterSection")
+            .style.display="none";
+
+        document.getElementById("backBtn")
+            .style.display="block";
+
+    });
+
+    gridAnchor.appendChild(card);
+
+});
+
+const taskContainer =
+    document.getElementById("taskContainer");
+
+taskData.forEach(task=>{
+
+    const card =
+        document.createElement("div");
+
+    card.className="task-card";
+
+    card.innerHTML=`
+
+        <div class="task-title">
+            ${task.task}
+        </div>
+
+        <div class="task-desc">
+            ${task.description}
+        </div>
+
+        <div class="task-footer">
+
+            <span class="badge resource">
+                ${task.resource || "General"}
+            </span>
+
+            <span>
+                ${task.estHrs} hrs
+            </span>
+
+            <span class="badge progress">
+                ${task.progress}
+            </span>
+
+        </div>
+
+    `;
+
+    taskContainer.appendChild(card);
+
+});
+
+function goToDashboard(){
+
+    document.getElementById("taskPanel")
+        .style.display="none";
+
+    document.getElementById("dashboardPanel")
+        .style.display="block";
+
+    document.getElementById("dashboardTitle")
+        .style.display="block";
+
+    document.getElementById("projectHeader")
+        .style.display="none";
+
+    document.getElementById("filterSection")
+        .style.display="flex";
+
+    document.getElementById("backBtn")
+        .style.display="none";
+}
+
+document
+.querySelectorAll(".filter-btn")
+.forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+        document
+        .querySelectorAll(".filter-btn")
+        .forEach(x=>x.classList.remove("active"));
+
+        btn.classList.add("active");
+
+    });
+
+});
+</script>
 </body>
 </html>
